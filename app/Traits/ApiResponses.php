@@ -9,7 +9,7 @@ trait ApiResponses
     /**
      * Return a successful response.
      */
-    protected function ok(string $message, array $data): JsonResponse
+    protected function ok(string $message, array $data = []): JsonResponse
     {
         return $this->success($message, $data, 200);
     }
@@ -17,7 +17,7 @@ trait ApiResponses
     /**
      * Return a success response with the given payload.
      */
-    protected function success(string $message, array $data, int $statusCode = 200): JsonResponse
+    protected function success(string $message, array $data = [], int $statusCode = 200): JsonResponse
     {
         return response()->json([
             'data' => $data,
