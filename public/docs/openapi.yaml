@@ -1,0 +1,1485 @@
+openapi: 3.0.3
+info:
+  title: 'Orders Hub API Documentation'
+  description: ''
+  version: 1.0.0
+servers:
+  -
+    url: 'http://localhost:8000'
+tags:
+  -
+    name: Authentication
+    description: ''
+  -
+    name: Endpoints
+    description: ''
+  -
+    name: 'Managing Orders'
+    description: ''
+  -
+    name: 'Managing Orders by Customer'
+    description: ''
+  -
+    name: 'Managing Users'
+    description: ''
+  -
+    name: 'Showing Customers'
+    description: ''
+paths:
+  /api/login:
+    post:
+      summary: Login
+      operationId: login
+      description: "Authenticates the user and returns the user's API token."
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    token: '{YOUR_AUTH_KEY}'
+                  message: Authenticated
+                  status: 200
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        example: '{YOUR_AUTH_KEY}'
+                  message:
+                    type: string
+                    example: Authenticated
+                  status:
+                    type: integer
+                    example: 200
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 'Must be a valid email address.'
+                  example: gbailey@example.net
+                password:
+                  type: string
+                  description: 'Must be at least 8 characters.'
+                  example: '+-0pBNvYgxwmi/#iw'
+              required:
+                - email
+                - password
+      security: []
+  /api/logout:
+    post:
+      summary: Logout
+      operationId: logout
+      description: "Signs out the user and destroy's the API token."
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {  }
+                properties: {  }
+      tags:
+        - Authentication
+  /api/v1/user:
+    get:
+      summary: ''
+      operationId: getApiV1User
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  errors:
+                    -
+                      status: 401
+                      message: Unauthenticated.
+                      source: ''
+                properties:
+                  errors:
+                    type: array
+                    example:
+                      -
+                        status: 401
+                        message: Unauthenticated.
+                        source: ''
+                    items:
+                      type: object
+                      properties:
+                        status:
+                          type: integer
+                          example: 401
+                        message:
+                          type: string
+                          example: Unauthenticated.
+                        source:
+                          type: string
+                          example: ''
+      tags:
+        - Endpoints
+  /api/v1/orders:
+    get:
+      summary: 'Get all orders'
+      operationId: getAllOrders
+      description: ''
+      parameters:
+        -
+          in: query
+          name: sort
+          description: 'Data field(s) to sort by. Separate multiple fields with commas. Denote descending sort with a minus sign.'
+          example: 'sort=reference,-createdAt'
+          required: false
+          schema:
+            type: string
+            description: 'Data field(s) to sort by. Separate multiple fields with commas. Denote descending sort with a minus sign.'
+            example: 'sort=reference,-createdAt'
+        -
+          in: query
+          name: 'filter[status]'
+          description: 'Filter by status: pending, paid, shipped, cancelled.'
+          example: null
+          required: false
+          schema:
+            type: string
+            description: 'Filter by status: pending, paid, shipped, cancelled.'
+            example: null
+        -
+          in: query
+          name: 'filter[reference]'
+          description: 'Filter by reference. Wildcards are supported.'
+          example: '*ORD-1*'
+          required: false
+          schema:
+            type: string
+            description: 'Filter by reference. Wildcards are supported.'
+            example: '*ORD-1*'
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  errors:
+                    -
+                      status: 401
+                      message: Unauthenticated.
+                      source: ''
+                properties:
+                  errors:
+                    type: array
+                    example:
+                      -
+                        status: 401
+                        message: Unauthenticated.
+                        source: ''
+                    items:
+                      type: object
+                      properties:
+                        status:
+                          type: integer
+                          example: 401
+                        message:
+                          type: string
+                          example: Unauthenticated.
+                        source:
+                          type: string
+                          example: ''
+      tags:
+        - 'Managing Orders'
+    post:
+      summary: 'Create a order'
+      operationId: createAOrder
+      description: 'Creates a new order record. Users can only create orders for themselves. Managers can create orders for any user.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    type: order
+                    id: 107
+                    attributes:
+                      reference: ORD-10432
+                      notes: 'Priority delivery'
+                      status: paid
+                      createdAt: '2024-03-26T04:40:48.000000Z'
+                      updatedAt: '2024-03-26T04:40:48.000000Z'
+                    relationships:
+                      customer:
+                        data:
+                          type: user
+                          id: 1
+                        links:
+                          self: 'http://localhost:8000/api/v1/customers/1'
+                    links:
+                      self: 'http://localhost:8000/api/v1/orders/107'
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        example: order
+                      id:
+                        type: integer
+                        example: 107
+                      attributes:
+                        type: object
+                        properties:
+                          reference:
+                            type: string
+                            example: ORD-10432
+                          notes:
+                            type: string
+                            example: 'Priority delivery'
+                          status:
+                            type: string
+                            example: paid
+                          createdAt:
+                            type: string
+                            example: '2024-03-26T04:40:48.000000Z'
+                          updatedAt:
+                            type: string
+                            example: '2024-03-26T04:40:48.000000Z'
+                      relationships:
+                        type: object
+                        properties:
+                          customer:
+                            type: object
+                            properties:
+                              data:
+                                type: object
+                                properties:
+                                  type:
+                                    type: string
+                                    example: user
+                                  id:
+                                    type: integer
+                                    example: 1
+                              links:
+                                type: object
+                                properties:
+                                  self:
+                                    type: string
+                                    example: 'http://localhost:8000/api/v1/customers/1'
+                      links:
+                        type: object
+                        properties:
+                          self:
+                            type: string
+                            example: 'http://localhost:8000/api/v1/orders/107'
+      tags:
+        - 'Managing Orders'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: object
+                  description: ''
+                  example: []
+                  properties:
+                    attributes:
+                      type: object
+                      description: ''
+                      example: []
+                      properties:
+                        reference:
+                          type: string
+                          description: "The order's reference."
+                          example: No-example
+                        notes:
+                          type: string
+                          description: "The order's notes."
+                          example: No-example
+                        status:
+                          type: string
+                          description: "The order's status."
+                          example: No-example
+                          enum:
+                            - pending
+                            - paid
+                            - shipped
+                            - cancelled
+                      required:
+                        - reference
+                        - notes
+                        - status
+                    relationships:
+                      type: object
+                      description: ''
+                      example: []
+                      properties:
+                        customer:
+                          type: object
+                          description: ''
+                          example: []
+                          properties:
+                            data:
+                              type: object
+                              description: ''
+                              example: []
+                              properties:
+                                id:
+                                  type: integer
+                                  description: 'The customer the order belongs to. Must match an existing stored value.'
+                                  example: 0
+                              required:
+                                - id
+                          required:
+                            - data
+                      required:
+                        - customer
+                  required:
+                    - attributes
+                    - relationships
+              required:
+                - data
+  '/api/v1/orders/{id}':
+    get:
+      summary: 'Show a specific order.'
+      operationId: showASpecificOrder
+      description: 'Display an individual order.'
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  errors:
+                    -
+                      status: 401
+                      message: Unauthenticated.
+                      source: ''
+                properties:
+                  errors:
+                    type: array
+                    example:
+                      -
+                        status: 401
+                        message: Unauthenticated.
+                        source: ''
+                    items:
+                      type: object
+                      properties:
+                        status:
+                          type: integer
+                          example: 401
+                        message:
+                          type: string
+                          example: Unauthenticated.
+                        source:
+                          type: string
+                          example: ''
+      tags:
+        - 'Managing Orders'
+    delete:
+      summary: 'Delete order.'
+      operationId: deleteOrder
+      description: 'Remove the specified resource from storage.'
+      parameters: []
+      responses: {  }
+      tags:
+        - 'Managing Orders'
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the order.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/v1/orders/{order_id}':
+    put:
+      summary: 'Replace Order'
+      operationId: replaceOrder
+      description: 'Replace the specified order in storage.'
+      parameters: []
+      responses: {  }
+      tags:
+        - 'Managing Orders'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: object
+                  description: ''
+                  example: []
+                  properties:
+                    attributes:
+                      type: object
+                      description: ''
+                      example: []
+                      properties:
+                        reference:
+                          type: string
+                          description: ''
+                          example: architecto
+                        notes:
+                          type: string
+                          description: ''
+                          example: architecto
+                        status:
+                          type: string
+                          description: ''
+                          example: paid
+                          enum:
+                            - pending
+                            - paid
+                            - shipped
+                            - cancelled
+                      required:
+                        - reference
+                        - notes
+                        - status
+                    relationships:
+                      type: object
+                      description: ''
+                      example: []
+                      properties:
+                        customer:
+                          type: object
+                          description: ''
+                          example: []
+                          properties:
+                            data:
+                              type: object
+                              description: ''
+                              example: []
+                              properties:
+                                id:
+                                  type: integer
+                                  description: ''
+                                  example: 16
+                              required:
+                                - id
+                          required:
+                            - data
+                      required:
+                        - customer
+                  required:
+                    - attributes
+                    - relationships
+              required:
+                - data
+    patch:
+      summary: 'Update Order'
+      operationId: updateOrder
+      description: 'Update the specified order in storage.'
+      parameters: []
+      responses: {  }
+      tags:
+        - 'Managing Orders'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: object
+                  description: ''
+                  example: []
+                  properties:
+                    attributes:
+                      type: object
+                      description: ''
+                      example: []
+                      properties:
+                        reference:
+                          type: string
+                          description: ''
+                          example: architecto
+                        notes:
+                          type: string
+                          description: ''
+                          example: architecto
+                        status:
+                          type: string
+                          description: ''
+                          example: pending
+                          enum:
+                            - pending
+                            - paid
+                            - shipped
+                            - cancelled
+                    relationships:
+                      type: object
+                      description: ''
+                      example: []
+                      properties:
+                        customer:
+                          type: object
+                          description: ''
+                          example: []
+                          properties:
+                            data:
+                              type: object
+                              description: ''
+                              example: []
+                              properties:
+                                id:
+                                  type: string
+                                  description: ''
+                                  example: null
+    parameters:
+      -
+        in: path
+        name: order_id
+        description: 'The ID of the order.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/v1/customers/{customer_id}/orders':
+    get:
+      summary: 'Get all orders'
+      operationId: getAllOrders
+      description: 'Retrieves all orders created by a specific user.'
+      parameters:
+        -
+          in: query
+          name: sort
+          description: 'Data field(s) to sort by. Separate multiple fields with commas. Denote descending sort with a minus sign.'
+          example: sort=name
+          required: false
+          schema:
+            type: string
+            description: 'Data field(s) to sort by. Separate multiple fields with commas. Denote descending sort with a minus sign.'
+            example: sort=name
+        -
+          in: query
+          name: 'filter[name]'
+          description: 'Filter by name. Wildcards are supported.'
+          example: architecto
+          required: false
+          schema:
+            type: string
+            description: 'Filter by name. Wildcards are supported.'
+            example: architecto
+        -
+          in: query
+          name: 'filter[email]'
+          description: 'Filter by email. Wildcards are supported.'
+          example: architecto
+          required: false
+          schema:
+            type: string
+            description: 'Filter by email. Wildcards are supported.'
+            example: architecto
+      responses:
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  errors:
+                    -
+                      status: 404
+                      message: 'The resource cannot be found.'
+                      source: ''
+                properties:
+                  errors:
+                    type: array
+                    example:
+                      -
+                        status: 404
+                        message: 'The resource cannot be found.'
+                        source: ''
+                    items:
+                      type: object
+                      properties:
+                        status:
+                          type: integer
+                          example: 404
+                        message:
+                          type: string
+                          example: 'The resource cannot be found.'
+                        source:
+                          type: string
+                          example: ''
+      tags:
+        - 'Managing Orders by Customer'
+    post:
+      summary: 'Create a order'
+      operationId: createAOrder
+      description: 'Creates a order for the specific user.'
+      parameters: []
+      responses: {  }
+      tags:
+        - 'Managing Orders by Customer'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: object
+                  description: ''
+                  example: []
+                  properties:
+                    attributes:
+                      type: object
+                      description: ''
+                      example: []
+                      properties:
+                        reference:
+                          type: string
+                          description: "The order's reference."
+                          example: No-example
+                        notes:
+                          type: string
+                          description: "The order's notes."
+                          example: No-example
+                        status:
+                          type: string
+                          description: "The order's status."
+                          example: No-example
+                          enum:
+                            - pending
+                            - paid
+                            - shipped
+                            - cancelled
+                      required:
+                        - reference
+                        - notes
+                        - status
+                  required:
+                    - attributes
+                customer:
+                  type: integer
+                  description: 'The customer the order belongs to. Must match an existing stored value.'
+                  example: 0
+              required:
+                - data
+                - customer
+    parameters:
+      -
+        in: path
+        name: customer_id
+        description: "The customer's ID."
+        example: null
+        required: true
+        schema:
+          type: integer
+  '/api/v1/customers/{customer_id}/orders/{id}':
+    delete:
+      summary: "Delete an customer's order"
+      operationId: deleteAnCustomersOrder
+      description: "Deletes an customer's order."
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {  }
+                properties: {  }
+      tags:
+        - 'Managing Orders by Customer'
+    parameters:
+      -
+        in: path
+        name: customer_id
+        description: "The customer's ID."
+        example: null
+        required: true
+        schema:
+          type: integer
+      -
+        in: path
+        name: id
+        description: 'The order ID.'
+        example: null
+        required: true
+        schema:
+          type: integer
+  '/api/v1/customers/{customer_id}/orders/{order_id}':
+    put:
+      summary: "Replace an customer's order"
+      operationId: replaceAnCustomersOrder
+      description: "Replaces an customer's order."
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    type: order
+                    id: 107
+                    attributes:
+                      reference: ORD-10432
+                      notes: 'Priority delivery'
+                      status: paid
+                      createdAt: '2024-03-26T04:40:48.000000Z'
+                      updatedAt: '2024-03-26T04:40:48.000000Z'
+                    relationships:
+                      customer:
+                        data:
+                          type: user
+                          id: 1
+                        links:
+                          self: 'http://localhost:8000/api/v1/customers/1'
+                    links:
+                      self: 'http://localhost:8000/api/v1/orders/107'
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        example: order
+                      id:
+                        type: integer
+                        example: 107
+                      attributes:
+                        type: object
+                        properties:
+                          reference:
+                            type: string
+                            example: ORD-10432
+                          notes:
+                            type: string
+                            example: 'Priority delivery'
+                          status:
+                            type: string
+                            example: paid
+                          createdAt:
+                            type: string
+                            example: '2024-03-26T04:40:48.000000Z'
+                          updatedAt:
+                            type: string
+                            example: '2024-03-26T04:40:48.000000Z'
+                      relationships:
+                        type: object
+                        properties:
+                          customer:
+                            type: object
+                            properties:
+                              data:
+                                type: object
+                                properties:
+                                  type:
+                                    type: string
+                                    example: user
+                                  id:
+                                    type: integer
+                                    example: 1
+                              links:
+                                type: object
+                                properties:
+                                  self:
+                                    type: string
+                                    example: 'http://localhost:8000/api/v1/customers/1'
+                      links:
+                        type: object
+                        properties:
+                          self:
+                            type: string
+                            example: 'http://localhost:8000/api/v1/orders/107'
+      tags:
+        - 'Managing Orders by Customer'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: object
+                  description: ''
+                  example: []
+                  properties:
+                    attributes:
+                      type: object
+                      description: ''
+                      example: []
+                      properties:
+                        reference:
+                          type: string
+                          description: ''
+                          example: architecto
+                        notes:
+                          type: string
+                          description: ''
+                          example: architecto
+                        status:
+                          type: string
+                          description: ''
+                          example: pending
+                          enum:
+                            - pending
+                            - paid
+                            - shipped
+                            - cancelled
+                      required:
+                        - reference
+                        - notes
+                        - status
+                    relationships:
+                      type: object
+                      description: ''
+                      example: []
+                      properties:
+                        customer:
+                          type: object
+                          description: ''
+                          example: []
+                          properties:
+                            data:
+                              type: object
+                              description: ''
+                              example: []
+                              properties:
+                                id:
+                                  type: integer
+                                  description: ''
+                                  example: 16
+                              required:
+                                - id
+                          required:
+                            - data
+                      required:
+                        - customer
+                  required:
+                    - attributes
+                    - relationships
+              required:
+                - data
+    patch:
+      summary: "Update an customer's order"
+      operationId: updateAnCustomersOrder
+      description: "Updates an customer's order."
+      parameters: []
+      responses: {  }
+      tags:
+        - 'Managing Orders by Customer'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: object
+                  description: ''
+                  example: []
+                  properties:
+                    attributes:
+                      type: object
+                      description: ''
+                      example: []
+                      properties:
+                        reference:
+                          type: string
+                          description: ''
+                          example: architecto
+                        notes:
+                          type: string
+                          description: ''
+                          example: architecto
+                        status:
+                          type: string
+                          description: ''
+                          example: paid
+                          enum:
+                            - pending
+                            - paid
+                            - shipped
+                            - cancelled
+                    relationships:
+                      type: object
+                      description: ''
+                      example: []
+                      properties:
+                        customer:
+                          type: object
+                          description: ''
+                          example: []
+                          properties:
+                            data:
+                              type: object
+                              description: ''
+                              example: []
+                              properties:
+                                id:
+                                  type: string
+                                  description: ''
+                                  example: null
+    parameters:
+      -
+        in: path
+        name: customer_id
+        description: "The customer's ID."
+        example: null
+        required: true
+        schema:
+          type: integer
+      -
+        in: path
+        name: order_id
+        description: 'The order ID.'
+        example: null
+        required: true
+        schema:
+          type: integer
+  /api/v1/users:
+    get:
+      summary: 'Get all users'
+      operationId: getAllUsers
+      description: ''
+      parameters:
+        -
+          in: query
+          name: sort
+          description: 'Data field(s) to sort by. Separate multiple fields with commas. Denote descending sort with a minus sign.'
+          example: sort=name
+          required: false
+          schema:
+            type: string
+            description: 'Data field(s) to sort by. Separate multiple fields with commas. Denote descending sort with a minus sign.'
+            example: sort=name
+        -
+          in: query
+          name: 'filter[name]'
+          description: 'Filter by status name. Wildcards are supported.'
+          example: null
+          required: false
+          schema:
+            type: string
+            description: 'Filter by status name. Wildcards are supported.'
+            example: null
+        -
+          in: query
+          name: 'filter[email]'
+          description: 'Filter by email. Wildcards are supported.'
+          example: null
+          required: false
+          schema:
+            type: string
+            description: 'Filter by email. Wildcards are supported.'
+            example: null
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  errors:
+                    -
+                      status: 401
+                      message: Unauthenticated.
+                      source: ''
+                properties:
+                  errors:
+                    type: array
+                    example:
+                      -
+                        status: 401
+                        message: Unauthenticated.
+                        source: ''
+                    items:
+                      type: object
+                      properties:
+                        status:
+                          type: integer
+                          example: 401
+                        message:
+                          type: string
+                          example: Unauthenticated.
+                        source:
+                          type: string
+                          example: ''
+      tags:
+        - 'Managing Users'
+    post:
+      summary: 'Create a user'
+      operationId: createAUser
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    type: user
+                    id: 16
+                    attributes:
+                      name: 'My User'
+                      email: user@user.com
+                      isManager: false
+                    links:
+                      self: 'http://localhost:8000/api/v1/customers/16'
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        example: user
+                      id:
+                        type: integer
+                        example: 16
+                      attributes:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            example: 'My User'
+                          email:
+                            type: string
+                            example: user@user.com
+                          isManager:
+                            type: boolean
+                            example: false
+                      links:
+                        type: object
+                        properties:
+                          self:
+                            type: string
+                            example: 'http://localhost:8000/api/v1/customers/16'
+      tags:
+        - 'Managing Users'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: object
+                  description: ''
+                  example: []
+                  properties:
+                    attributes:
+                      type: object
+                      description: ''
+                      example: []
+                      properties:
+                        name:
+                          type: string
+                          description: ''
+                          example: architecto
+                        email:
+                          type: string
+                          description: 'Must be a valid email address.'
+                          example: zbailey@example.net
+                        isManager:
+                          type: boolean
+                          description: ''
+                          example: true
+                        password:
+                          type: string
+                          description: ''
+                          example: '|]|{+-'
+                      required:
+                        - name
+                        - email
+                        - isManager
+                        - password
+                  required:
+                    - attributes
+              required:
+                - data
+  '/api/v1/users/{id}':
+    get:
+      summary: 'Display a user'
+      operationId: displayAUser
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  errors:
+                    -
+                      status: 401
+                      message: Unauthenticated.
+                      source: ''
+                properties:
+                  errors:
+                    type: array
+                    example:
+                      -
+                        status: 401
+                        message: Unauthenticated.
+                        source: ''
+                    items:
+                      type: object
+                      properties:
+                        status:
+                          type: integer
+                          example: 401
+                        message:
+                          type: string
+                          example: Unauthenticated.
+                        source:
+                          type: string
+                          example: ''
+      tags:
+        - 'Managing Users'
+    delete:
+      summary: 'Delete a user'
+      operationId: deleteAUser
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {  }
+                properties: {  }
+      tags:
+        - 'Managing Users'
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the user.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/v1/users/{user_id}':
+    put:
+      summary: 'Replace a user'
+      operationId: replaceAUser
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    type: user
+                    id: 16
+                    attributes:
+                      name: 'My User'
+                      email: user@user.com
+                      isManager: false
+                    links:
+                      self: 'http://localhost:8000/api/v1/customers/16'
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        example: user
+                      id:
+                        type: integer
+                        example: 16
+                      attributes:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            example: 'My User'
+                          email:
+                            type: string
+                            example: user@user.com
+                          isManager:
+                            type: boolean
+                            example: false
+                      links:
+                        type: object
+                        properties:
+                          self:
+                            type: string
+                            example: 'http://localhost:8000/api/v1/customers/16'
+      tags:
+        - 'Managing Users'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: object
+                  description: ''
+                  example: []
+                  properties:
+                    attributes:
+                      type: object
+                      description: ''
+                      example: []
+                      properties:
+                        name:
+                          type: string
+                          description: ''
+                          example: architecto
+                        email:
+                          type: string
+                          description: 'Must be a valid email address.'
+                          example: zbailey@example.net
+                        isManager:
+                          type: boolean
+                          description: ''
+                          example: true
+                        password:
+                          type: string
+                          description: ''
+                          example: '|]|{+-'
+                      required:
+                        - name
+                        - email
+                        - isManager
+                        - password
+                  required:
+                    - attributes
+              required:
+                - data
+    patch:
+      summary: 'Update a user'
+      operationId: updateAUser
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    type: user
+                    id: 16
+                    attributes:
+                      name: 'My User'
+                      email: user@user.com
+                      isManager: false
+                    links:
+                      self: 'http://localhost:8000/api/v1/customers/16'
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        example: user
+                      id:
+                        type: integer
+                        example: 16
+                      attributes:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            example: 'My User'
+                          email:
+                            type: string
+                            example: user@user.com
+                          isManager:
+                            type: boolean
+                            example: false
+                      links:
+                        type: object
+                        properties:
+                          self:
+                            type: string
+                            example: 'http://localhost:8000/api/v1/customers/16'
+      tags:
+        - 'Managing Users'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: object
+                  description: ''
+                  example: []
+                  properties:
+                    attributes:
+                      type: object
+                      description: ''
+                      example: []
+                      properties:
+                        name:
+                          type: string
+                          description: ''
+                          example: architecto
+                        email:
+                          type: string
+                          description: 'Must be a valid email address.'
+                          example: zbailey@example.net
+                        isManager:
+                          type: boolean
+                          description: ''
+                          example: true
+                        password:
+                          type: string
+                          description: ''
+                          example: '|]|{+-'
+    parameters:
+      -
+        in: path
+        name: user_id
+        description: 'The ID of the user.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  /api/v1/customers:
+    get:
+      summary: 'Get customers.'
+      operationId: getCustomers
+      description: 'Retrieves all users that created a order.'
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  errors:
+                    -
+                      status: 401
+                      message: Unauthenticated.
+                      source: ''
+                properties:
+                  errors:
+                    type: array
+                    example:
+                      -
+                        status: 401
+                        message: Unauthenticated.
+                        source: ''
+                    items:
+                      type: object
+                      properties:
+                        status:
+                          type: integer
+                          example: 401
+                        message:
+                          type: string
+                          example: Unauthenticated.
+                        source:
+                          type: string
+                          example: ''
+      tags:
+        - 'Showing Customers'
+  '/api/v1/customers/{id}':
+    get:
+      summary: 'Get an customer.'
+      operationId: getAnCustomer
+      description: 'Retrieves all users that created a order.'
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  errors:
+                    -
+                      status: 401
+                      message: Unauthenticated.
+                      source: ''
+                properties:
+                  errors:
+                    type: array
+                    example:
+                      -
+                        status: 401
+                        message: Unauthenticated.
+                        source: ''
+                    items:
+                      type: object
+                      properties:
+                        status:
+                          type: integer
+                          example: 401
+                        message:
+                          type: string
+                          example: Unauthenticated.
+                        source:
+                          type: string
+                          example: ''
+      tags:
+        - 'Showing Customers'
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the customer.'
+        example: 1
+        required: true
+        schema:
+          type: integer

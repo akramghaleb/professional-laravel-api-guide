@@ -16,7 +16,17 @@ class CustomerOrdersController extends ApiController
     protected $policyClass = OrderPolicy::class;
 
     /**
-     * Display a listing of the resource.
+     * Get all orders
+     *
+     * Retrieves all orders created by a specific user.
+     *
+     * @group Managing Orders by Customer
+     *
+     * @urlParam customer_id integer required The customer's ID. No-example
+     *
+     * @queryParam sort string Data field(s) to sort by. Separate multiple fields with commas. Denote descending sort with a minus sign. Example: sort=name
+     * @queryParam filter[name] Filter by name. Wildcards are supported.
+     * @queryParam filter[email] Filter by email. Wildcards are supported.
      */
     public function index(User $customer, OrderFilter $filters)
     {
@@ -26,7 +36,14 @@ class CustomerOrdersController extends ApiController
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Create a order
+     *
+     * Creates a order for the specific user.
+     *
+     * @group Managing Orders by Customer
+     *
+     * @urlParam customer_id integer required The customer's ID. No-example
+     *
      */
     public function store(StoreOrderRequest $request, User $customer)
     {
@@ -40,7 +57,14 @@ class CustomerOrdersController extends ApiController
     }
 
     /**
-     * Replace the specified resource in storage.
+     * Replace an customer's order
+     *
+     * Replaces an customer's order.
+     *
+     * @group Managing Orders by Customer
+     * @urlParam customer_id integer required The customer's ID. No-example
+     * @urlParam order_id integer required The order ID. No-example
+     * @response {"data":{"type":"order","id":107,"attributes":{"reference":"ORD-10432","notes":"Priority delivery","status":"paid","createdAt":"2024-03-26T04:40:48.000000Z","updatedAt":"2024-03-26T04:40:48.000000Z"},"relationships":{"customer":{"data":{"type":"user","id":1},"links":{"self":"http:\/\/localhost:8000\/api\/v1\/customers\/1"}}},"links":{"self":"http:\/\/localhost:8000\/api\/v1\/orders\/107"}}}
      */
     public function replace(ReplaceOrderRequest $request, User $customer, Order $order)
     {
@@ -54,7 +78,13 @@ class CustomerOrdersController extends ApiController
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update an customer's order
+     *
+     * Updates an customer's order.
+     *
+     * @group Managing Orders by Customer
+     * @urlParam customer_id integer required The customer's ID. No-example
+     * @urlParam order_id integer required The order ID. No-example
      */
     public function update(UpdateOrderRequest $request, User $customer, Order $order)
     {
@@ -68,7 +98,14 @@ class CustomerOrdersController extends ApiController
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete an customer's order
+     *
+     * Deletes an customer's order.
+     *
+     * @group Managing Orders by Customer
+     * @urlParam customer_id integer required The customer's ID. No-example
+     * @urlParam id integer required The order ID. No-example
+     * @response {}
      */
     public function destroy(User $customer, Order $order)
     {

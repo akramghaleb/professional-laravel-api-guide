@@ -20,9 +20,14 @@ class ReplaceOrderRequest extends BaseOrderRequest
     public function rules(): array
     {
         $rules = [
+            'data' => 'required|array',
+            'data.attributes' => 'required|array',
             'data.attributes.reference' => 'required|string',
             'data.attributes.notes' => 'required|string',
             'data.attributes.status' => 'required|string|in:pending,paid,shipped,cancelled',
+            'data.relationships' => 'required|array',
+            'data.relationships.customer' => 'required|array',
+            'data.relationships.customer.data' => 'required|array',
             'data.relationships.customer.data.id' => 'required|integer',
         ];
 

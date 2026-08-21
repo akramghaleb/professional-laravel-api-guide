@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Api\V1;
 
 use App\Permissions\V1\Abilities;
+use Illuminate\Support\Facades\Auth;
 
 class UpdateOrderRequest extends BaseOrderRequest
 {
@@ -28,7 +29,9 @@ class UpdateOrderRequest extends BaseOrderRequest
             'data.relationships.customer.data.id' => 'prohibited',
         ];
 
-        if ($this->user()->tokenCan(Abilities::UpdateOrder)) {
+        $user = Auth::user();
+
+        if ($user && $user->tokenCan(Abilities::UpdateOrder)) {
             $rules['data.relationships.customer.data.id'] = 'sometimes|integer';
         }
 
