@@ -9,6 +9,8 @@ class ApiController extends Controller
 {
     use ApiResponses;
 
+    protected $policyClass;
+
     /**
      * Determine whether the given relationship was requested via the include parameter.
      */
@@ -23,5 +25,13 @@ class ApiController extends Controller
         $includeValues = explode(',', strtolower($param));
 
         return in_array(strtolower($relationship), $includeValues);
+    }
+
+    /**
+     * Determine whether the current token grants the given ability.
+     */
+    public function isAble($ability, $targetModel)
+    {
+        return $this->authorize($ability, [$targetModel, $this->policyClass]);
     }
 }

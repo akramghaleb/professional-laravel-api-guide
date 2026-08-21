@@ -9,10 +9,14 @@ use App\Http\Requests\Api\V1\StoreOrderRequest;
 use App\Http\Requests\Api\V1\UpdateOrderRequest;
 use App\Http\Resources\V1\OrderResource;
 use App\Models\User;
+use App\Policies\V1\OrderPolicy;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class OrderController extends ApiController
 {
+    protected $policyClass = OrderPolicy::class;
+
     /**
      * Display a listing of the resource.
      */
@@ -62,11 +66,16 @@ class OrderController extends ApiController
         try {
             $order = Order::findOrFail($order_id);
 
+            // policy
+            $this->isAble('update', $order);
+
             $order->update($request->mappedAttributes());
 
             return new OrderResource($order);
         } catch (ModelNotFoundException $exception) {
             return $this->error('Order cannot be found.', 404);
+        } catch (AuthorizationException $ex) {
+            return $this->error('You are not authorized to update that resource', 403);
         }
     }
 
