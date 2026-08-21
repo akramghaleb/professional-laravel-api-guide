@@ -17,10 +17,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->apiResource('orders', OrderController::class);
-Route::middleware('auth:sanctum')->apiResource('customers', CustomersController::class);
-Route::middleware('auth:sanctum')->apiResource('customers.orders', CustomerOrdersController::class);
+Route::middleware('auth:sanctum')->group(function() {
+    Route::apiResource('orders', OrderController::class)->except(['update']);
+    Route::put('orders/{order}', [OrderController::class, 'replace']);
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+    Route::apiResource('customers', CustomersController::class);
+    Route::apiResource('customers.orders', CustomerOrdersController::class)->except(['update']);
+    Route::put('customers/{customer}/orders/{order}', [CustomerOrdersController::class, 'replace']);
+
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
 });

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Filters\V1\OrderFilter;
+use App\Http\Requests\Api\V1\ReplaceOrderRequest;
 use App\Http\Requests\Api\V1\StoreOrderRequest;
 use App\Http\Resources\V1\OrderResource;
 use App\Models\Order;
@@ -40,6 +41,34 @@ class CustomerOrdersController extends ApiController
         ];
 
         return new OrderResource(Order::create($model));
+    }
+
+    /**
+     * Replace the specified resource in storage.
+     */
+    public function replace(ReplaceOrderRequest $request, $customer_id,  $order_id)
+    {
+        // PUT
+        try {
+            $order = Order::findOrFail($order_id);
+
+            if ($order->user_id == $customer_id) {
+
+                $model = [
+                    'reference' => $request->input('data.attributes.reference'),
+                    'notes' => $request->input('data.attributes.notes'),
+                    'status' => $request->input('data.attributes.status'),
+                    'user_id' => $request->input('data.relationships.customer.data.id')
+                ];
+
+                $order->update($model);
+                return new OrderResource($order);
+            }
+            // TODO: order doesn't belong to user
+
+        } catch (ModelNotFoundException $exception) {
+            return $this->error('Order cannot be found.', 404);
+        }
     }
 
     /**
