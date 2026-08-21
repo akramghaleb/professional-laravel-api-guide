@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests\Api\V1;
 
-use Illuminate\Foundation\Http\FormRequest;
-
-class ReplaceOrderRequest extends FormRequest
+class ReplaceOrderRequest extends BaseOrderRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -29,15 +27,5 @@ class ReplaceOrderRequest extends FormRequest
         ];
 
         return $rules;
-    }
-
-    /**
-     * Get the error messages for the defined validation rules.
-     */
-    public function messages()
-    {
-        return [
-            'data.attributes.status' => 'The data.attributes.status value is invalid. Please use pending, paid, shipped, or cancelled.'
-        ];
     }
 }

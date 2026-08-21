@@ -32,14 +32,7 @@ class OrderController extends ApiController
             return $this->error('The provided customer id does not exist.', 404);
         }
 
-        $model = [
-            'reference' => $request->input('data.attributes.reference'),
-            'notes' => $request->input('data.attributes.notes'),
-            'status' => $request->input('data.attributes.status'),
-            'user_id' => $request->input('data.relationships.customer.data.id')
-        ];
-
-        return new OrderResource(Order::create($model));
+        return new OrderResource(Order::create($request->mappedAttributes()));
     }
 
     /**
@@ -66,6 +59,15 @@ class OrderController extends ApiController
     public function update(UpdateOrderRequest $request, $order_id)
     {
         // PATCH
+        try {
+            $order = Order::findOrFail($order_id);
+
+            $order->update($request->mappedAttributes());
+
+            return new OrderResource($order);
+        } catch (ModelNotFoundException $exception) {
+            return $this->error('Order cannot be found.', 404);
+        }
     }
 
     /**
@@ -77,14 +79,7 @@ class OrderController extends ApiController
         try {
             $order = Order::findOrFail($order_id);
 
-            $model = [
-                'reference' => $request->input('data.attributes.reference'),
-                'notes' => $request->input('data.attributes.notes'),
-                'status' => $request->input('data.attributes.status'),
-                'user_id' => $request->input('data.relationships.customer.data.id')
-            ];
-
-            $order->update($model);
+            $order->update($request->mappedAttributes());
 
             return new OrderResource($order);
         } catch (ModelNotFoundException $exception) {

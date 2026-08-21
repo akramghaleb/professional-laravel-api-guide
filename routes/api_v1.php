@@ -20,10 +20,12 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->group(function() {
     Route::apiResource('orders', OrderController::class)->except(['update']);
     Route::put('orders/{order}', [OrderController::class, 'replace']);
+    Route::patch('orders/{order}', [OrderController::class, 'update']);
 
     Route::apiResource('customers', CustomersController::class);
     Route::apiResource('customers.orders', CustomerOrdersController::class)->except(['update']);
     Route::put('customers/{customer}/orders/{order}', [CustomerOrdersController::class, 'replace']);
+    Route::patch('customers/{customer}/orders/{order}', [CustomerOrdersController::class, 'update']);
 
     Route::get('/user', function (Request $request) {
         return $request->user();

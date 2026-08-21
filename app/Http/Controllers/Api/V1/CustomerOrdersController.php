@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Filters\V1\OrderFilter;
 use App\Http\Requests\Api\V1\ReplaceOrderRequest;
 use App\Http\Requests\Api\V1\StoreOrderRequest;
+use App\Http\Requests\Api\V1\UpdateOrderRequest;
 use App\Http\Resources\V1\OrderResource;
 use App\Models\Order;
 use App\Models\User;
@@ -33,14 +34,7 @@ class CustomerOrdersController extends ApiController
             return $this->error('The provided customer id does not exist.', 404);
         }
 
-        $model = [
-            'reference' => $request->input('data.attributes.reference'),
-            'notes' => $request->input('data.attributes.notes'),
-            'status' => $request->input('data.attributes.status'),
-            'user_id' => $customer_id
-        ];
-
-        return new OrderResource(Order::create($model));
+        return new OrderResource(Order::create($request->mappedAttributes()));
     }
 
     /**
@@ -54,14 +48,27 @@ class CustomerOrdersController extends ApiController
 
             if ($order->user_id == $customer_id) {
 
-                $model = [
-                    'reference' => $request->input('data.attributes.reference'),
-                    'notes' => $request->input('data.attributes.notes'),
-                    'status' => $request->input('data.attributes.status'),
-                    'user_id' => $request->input('data.relationships.customer.data.id')
-                ];
+                $order->update($request->mappedAttributes());
+                return new OrderResource($order);
+            }
+            // TODO: order doesn't belong to user
 
-                $order->update($model);
+        } catch (ModelNotFoundException $exception) {
+            return $this->error('Order cannot be found.', 404);
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(UpdateOrderRequest $request, $customer_id,  $order_id)
+    {
+        // PUT
+        try {
+            $order = Order::findOrFail($order_id);
+
+            if ($order->user_id == $customer_id) {
+                $order->update($request->mappedAttributes());
                 return new OrderResource($order);
             }
             // TODO: order doesn't belong to user

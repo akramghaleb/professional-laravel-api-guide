@@ -2,10 +2,7 @@
 
 namespace App\Http\Requests\Api\V1;
 
-use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Foundation\Http\FormRequest;
-
-class StoreOrderRequest extends FormRequest
+class StoreOrderRequest extends BaseOrderRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -18,7 +15,7 @@ class StoreOrderRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, ValidationRule|array<mixed>|string>
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -33,15 +30,5 @@ class StoreOrderRequest extends FormRequest
         }
 
         return $rules;
-    }
-
-    /**
-     * Get the error messages for the defined validation rules.
-     */
-    public function messages()
-    {
-        return [
-            'data.attributes.status' => 'The data.attributes.status value is invalid. Please use pending, paid, shipped, or cancelled.'
-        ];
     }
 }
