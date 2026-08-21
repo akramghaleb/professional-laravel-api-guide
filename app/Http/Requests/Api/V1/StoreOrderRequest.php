@@ -22,18 +22,18 @@ class StoreOrderRequest extends BaseOrderRequest
     public function rules(): array
     {
         $customerIdAttr = $this->routeIs('orders.store') ? 'data.relationships.customer.data.id' : 'customer';
+        $user = $this->user();
+        $customerRule = 'required|integer|exists:users,id';
 
         $rules = [
             'data.attributes.reference' => 'required|string',
             'data.attributes.notes' => 'required|string',
             'data.attributes.status' => 'required|string|in:pending,paid,shipped,cancelled',
-            $customerIdAttr => 'required|integer|exists:users,id'
+            $customerIdAttr => $customerRule . '|size:' . $user->id
         ];
 
-        $user = $this->user();
-
-        if ($user->tokenCan(Abilities::CreateOwnOrder)) {
-            $rules[$customerIdAttr] .= '|size:' . $user->id;
+        if ($user->tokenCan(Abilities::CreateOrder)) {
+            $rules[$customerIdAttr] = $customerRule;
         }
 
         return $rules;

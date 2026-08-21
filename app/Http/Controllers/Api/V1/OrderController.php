@@ -9,7 +9,6 @@ use App\Http\Requests\Api\V1\StoreOrderRequest;
 use App\Http\Requests\Api\V1\UpdateOrderRequest;
 use App\Http\Resources\V1\OrderResource;
 use App\Policies\V1\OrderPolicy;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class OrderController extends ApiController
@@ -29,14 +28,11 @@ class OrderController extends ApiController
      */
     public function store(StoreOrderRequest $request)
     {
-        try {
-            // policy
-            $this->isAble('store', Order::class);
-
+        if ($this->isAble('store', Order::class)) {
             return new OrderResource(Order::create($request->mappedAttributes()));
-        } catch (AuthorizationException $ex) {
-            return $this->error('You are not authorized to create that resource', 403);
         }
+
+        return $this->error('You are not authorized to create that resource', 403);
     }
 
     /**
@@ -66,16 +62,14 @@ class OrderController extends ApiController
         try {
             $order = Order::findOrFail($order_id);
 
-            // policy
-            $this->isAble('update', $order);
+            if ($this->isAble('update', $order)) {
+                $order->update($request->mappedAttributes());
+                return new OrderResource($order);
+            }
 
-            $order->update($request->mappedAttributes());
-
-            return new OrderResource($order);
+            return $this->error('You are not authorized to update that resource', 403);
         } catch (ModelNotFoundException $exception) {
             return $this->error('Order cannot be found.', 404);
-        } catch (AuthorizationException $ex) {
-            return $this->error('You are not authorized to update that resource', 403);
         }
     }
 
@@ -88,16 +82,14 @@ class OrderController extends ApiController
         try {
             $order = Order::findOrFail($order_id);
 
-            // policy
-            $this->isAble('replace', $order);
+            if ($this->isAble('replace', $order)) {
+                $order->update($request->mappedAttributes());
+                return new OrderResource($order);
+            }
 
-            $order->update($request->mappedAttributes());
-
-            return new OrderResource($order);
+            return $this->error('You are not authorized to update that resource', 403);
         } catch (ModelNotFoundException $exception) {
             return $this->error('Order cannot be found.', 404);
-        } catch (AuthorizationException $ex) {
-            return $this->error('You are not authorized to replace that resource', 403);
         }
     }
 
@@ -109,16 +101,14 @@ class OrderController extends ApiController
         try {
             $order = Order::findOrFail($order_id);
 
-            // policy
-            $this->isAble('delete', $order);
+            if ($this->isAble('delete', $order)) {
+                $order->delete();
+                return $this->ok('Order successfully deleted');
+            }
 
-            $order->delete();
-
-            return $this->ok('Order successfully deleted');
+            return $this->error('You are not authorized to delete that resource', 403);
         } catch (ModelNotFoundException $exception) {
             return $this->error('Order cannot be found.', 404);
-        } catch (AuthorizationException $ex) {
-            return $this->error('You are not authorized to delete that resource', 403);
         }
     }
 }

@@ -25,11 +25,11 @@ class UpdateOrderRequest extends BaseOrderRequest
             'data.attributes.reference' => 'sometimes|string',
             'data.attributes.notes' => 'sometimes|string',
             'data.attributes.status' => 'sometimes|string|in:pending,paid,shipped,cancelled',
-            'data.relationships.customer.data.id' => 'sometimes|integer',
+            'data.relationships.customer.data.id' => 'prohibited',
         ];
 
-        if ($this->user()->tokenCan(Abilities::UpdateOwnOrder)) {
-            $rules['data.relationships.customer.data.id'] = 'prohibited';
+        if ($this->user()->tokenCan(Abilities::UpdateOrder)) {
+            $rules['data.relationships.customer.data.id'] = 'sometimes|integer';
         }
 
         return $rules;
