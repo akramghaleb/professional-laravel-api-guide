@@ -2,28 +2,39 @@
 
 namespace App\Http\Requests\Api\V1;
 
-use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Foundation\Http\FormRequest;
+use App\Permissions\V1\Abilities;
+use Illuminate\Support\Facades\Auth;
 
-class UpdateOrderRequest extends FormRequest
+class UpdateOrderRequest extends BaseOrderRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, ValidationRule|array<mixed>|string>
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
-        return [
-            //
+        $rules = [
+            'data.attributes.reference' => 'sometimes|string',
+            'data.attributes.notes' => 'sometimes|string',
+            'data.attributes.status' => 'sometimes|string|in:pending,paid,shipped,cancelled',
+            'data.relationships.customer.data.id' => 'prohibited',
         ];
+
+        $user = Auth::user();
+
+        if ($user && $user->tokenCan(Abilities::UpdateOrder)) {
+            $rules['data.relationships.customer.data.id'] = 'sometimes|integer';
+        }
+
+        return $rules;
     }
 }

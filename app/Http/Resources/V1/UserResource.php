@@ -20,7 +20,8 @@ class UserResource extends JsonResource
             'attributes' => [
                 'name' => $this->name,
                 'email' => $this->email,
-                $this->mergeWhen($request->routeIs('users.*'), [
+                'isManager' => $this->is_manager,
+                $this->mergeWhen($request->routeIs('customers.*'), [
                     'emailVerifiedAt' => $this->email_verified_at,
                     'createdAt' => $this->created_at,
                     'updatedAt' => $this->updated_at,
@@ -28,7 +29,7 @@ class UserResource extends JsonResource
             ],
             'includes' => OrderResource::collection($this->whenLoaded('orders')),
             'links' => [
-                'self' => route('users.show', ['user' => $this->id])
+                'self' => route('customers.show', ['customer' => $this->id])
             ]
         ];
     }

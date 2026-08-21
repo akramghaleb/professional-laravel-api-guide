@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Api\V1;
 
-class StoreUserRequest extends BaseUserRequest
+class ReplaceUserRequest extends BaseUserRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -19,7 +19,7 @@ class StoreUserRequest extends BaseUserRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'data' => 'required|array',
             'data.attributes' => 'required|array',
             'data.attributes.name' => 'required|string',
@@ -27,5 +27,7 @@ class StoreUserRequest extends BaseUserRequest
             'data.attributes.isManager' => 'required|boolean',
             'data.attributes.password' => 'required|string',
         ];
+
+        return $rules;
     }
 }

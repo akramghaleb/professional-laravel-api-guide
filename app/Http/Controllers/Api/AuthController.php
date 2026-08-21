@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\LoginUserRequest;
 use App\Models\User;
+use App\Permissions\V1\Abilities;
 use App\Traits\ApiResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +15,19 @@ class AuthController extends Controller
     use ApiResponses;
 
     /**
-     * Authenticate the user and issue an API token.
+     * Login
+     *
+     * Authenticates the user and returns the user's API token.
+     *
+     * @unauthenticated
+     * @group Authentication
+     * @response 200 {
+    "data": {
+        "token": "{YOUR_AUTH_KEY}"
+    },
+    "message": "Authenticated",
+    "status": 200
+}
      */
     public function login(LoginUserRequest $request)
     {
@@ -31,14 +44,19 @@ class AuthController extends Controller
             [
                 'token' => $user->createToken(
                     'API token for ' . $user->email,
-                    ['*'],
+                    Abilities::getAbilities($user),
                     now()->addMonth())->plainTextToken
             ]
         );
     }
 
     /**
-     * Revoke the API token used for the current request.
+     * Logout
+     *
+     * Signs out the user and destroy's the API token.
+     *
+     * @group Authentication
+     * @response 200 {}
      */
     public function logout(Request $request)
     {

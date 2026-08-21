@@ -29,11 +29,29 @@ trait ApiResponses
     /**
      * Return an error response.
      */
-    protected function error(string $message, int $statusCode): JsonResponse
+    protected function error(array|string $errors = [], ?int $statusCode = null): JsonResponse
     {
+        if (is_string($errors)) {
+            return response()->json([
+                'message' => $errors,
+                'status' => $statusCode
+            ], $statusCode);
+        }
+
         return response()->json([
-            'message' => $message,
-            'status' => $statusCode
+            'errors' => $errors
         ], $statusCode);
+    }
+
+    /**
+     * Return a 403 response for a forbidden request.
+     */
+    protected function notAuthorized(string $message): JsonResponse
+    {
+        return $this->error([[
+            'status' => 403,
+            'message' => $message,
+            'source' => ''
+        ]], 403);
     }
 }

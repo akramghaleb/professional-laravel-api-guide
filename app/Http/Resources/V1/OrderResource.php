@@ -21,7 +21,7 @@ class OrderResource extends JsonResource
             'attributes' => [
                 'reference' => $this->reference,
                 'notes' => $this->when(
-                    $request->routeIs('orders.show'),
+                    !$request->routeIs(['orders.index', 'customers.orders.index']),
                     $this->notes
                 ),
                 'status' => $this->status,
@@ -35,7 +35,7 @@ class OrderResource extends JsonResource
                         'id' => $this->user_id
                     ],
                     'links' => [
-                        'self' => route('users.show', ['user' => $this->user_id])
+                        'self' => route('customers.show', ['customer' => $this->user_id])
                     ]
                 ]
             ],
