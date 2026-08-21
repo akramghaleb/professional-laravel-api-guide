@@ -9,7 +9,6 @@ use App\Http\Requests\Api\V1\StoreOrderRequest;
 use App\Http\Requests\Api\V1\UpdateOrderRequest;
 use App\Http\Resources\V1\OrderResource;
 use App\Policies\V1\OrderPolicy;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class OrderController extends ApiController
 {
@@ -32,83 +31,60 @@ class OrderController extends ApiController
             return new OrderResource(Order::create($request->mappedAttributes()));
         }
 
-        return $this->error('You are not authorized to create that resource', 403);
+        return $this->notAuthorized('You are not authorized to create that resource');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show($order_id)
+    public function show(Order $order)
     {
-        try {
-            $order = Order::findOrFail($order_id);
-
-            if ($this->include('customer')) {
-                return new OrderResource($order->load('customer'));
-            }
-
-            return new OrderResource($order);
-        } catch (ModelNotFoundException $exception) {
-            return $this->error('Order cannot be found.', 404);
+        if ($this->include('customer')) {
+            return new OrderResource($order->load('customer'));
         }
+
+        return new OrderResource($order);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateOrderRequest $request, $order_id)
+    public function update(UpdateOrderRequest $request, Order $order)
     {
         // PATCH
-        try {
-            $order = Order::findOrFail($order_id);
-
-            if ($this->isAble('update', $order)) {
-                $order->update($request->mappedAttributes());
-                return new OrderResource($order);
-            }
-
-            return $this->error('You are not authorized to update that resource', 403);
-        } catch (ModelNotFoundException $exception) {
-            return $this->error('Order cannot be found.', 404);
+        if ($this->isAble('update', $order)) {
+            $order->update($request->mappedAttributes());
+            return new OrderResource($order);
         }
+
+        return $this->notAuthorized('You are not authorized to update that resource');
     }
 
     /**
      * Replace the specified resource in storage.
      */
-    public function replace(ReplaceOrderRequest $request, $order_id)
+    public function replace(ReplaceOrderRequest $request, Order $order)
     {
         // PUT
-        try {
-            $order = Order::findOrFail($order_id);
-
-            if ($this->isAble('replace', $order)) {
-                $order->update($request->mappedAttributes());
-                return new OrderResource($order);
-            }
-
-            return $this->error('You are not authorized to update that resource', 403);
-        } catch (ModelNotFoundException $exception) {
-            return $this->error('Order cannot be found.', 404);
+        if ($this->isAble('replace', $order)) {
+            $order->update($request->mappedAttributes());
+            return new OrderResource($order);
         }
+
+        return $this->notAuthorized('You are not authorized to update that resource');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($order_id)
+    public function destroy(Order $order)
     {
-        try {
-            $order = Order::findOrFail($order_id);
-
-            if ($this->isAble('delete', $order)) {
-                $order->delete();
-                return $this->ok('Order successfully deleted');
-            }
-
-            return $this->error('You are not authorized to delete that resource', 403);
-        } catch (ModelNotFoundException $exception) {
-            return $this->error('Order cannot be found.', 404);
+        // policy
+        if ($this->isAble('delete', $order)) {
+            $order->delete();
+            return $this->ok('Order successfully deleted');
         }
+
+        return $this->notAuthorized('You are not authorized to delete that resource');
     }
 }

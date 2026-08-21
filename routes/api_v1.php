@@ -28,9 +28,11 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::patch('users/{user}', [UserController::class, 'update']);
 
     Route::apiResource('customers', CustomersController::class)->except(['store','update','destroy']);
-    Route::apiResource('customers.orders', CustomerOrdersController::class)->except(['update']);
-    Route::put('customers/{customer}/orders/{order}', [CustomerOrdersController::class, 'replace']);
-    Route::patch('customers/{customer}/orders/{order}', [CustomerOrdersController::class, 'update']);
+    Route::scopeBindings()->group(function () {
+        Route::apiResource('customers.orders', CustomerOrdersController::class)->except(['update']);
+        Route::put('customers/{customer}/orders/{order}', [CustomerOrdersController::class, 'replace']);
+        Route::patch('customers/{customer}/orders/{order}', [CustomerOrdersController::class, 'update']);
+    });
 
     Route::get('/user', function (Request $request) {
         return $request->user();
