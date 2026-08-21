@@ -39,7 +39,7 @@ class OrderResource extends JsonResource
                     ]
                 ]
             ],
-            'includes' => new UserResource($this->whenLoaded('user')),
+            'includes' => new UserResource($this->whenLoaded('customer')),
             'links' => [
                 'self' => route('orders.show', ['order' => $this->id])
             ]
