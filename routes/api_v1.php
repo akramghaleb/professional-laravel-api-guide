@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\CustomersController;
 use App\Http\Controllers\Api\V1\CustomerOrdersController;
+use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,7 +23,11 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::put('orders/{order}', [OrderController::class, 'replace']);
     Route::patch('orders/{order}', [OrderController::class, 'update']);
 
-    Route::apiResource('customers', CustomersController::class);
+    Route::apiResource('users', UserController::class)->except(['update']);
+    Route::put('users/{user}', [UserController::class, 'replace']);
+    Route::patch('users/{user}', [UserController::class, 'update']);
+
+    Route::apiResource('customers', CustomersController::class)->except(['store','update','destroy']);
     Route::apiResource('customers.orders', CustomerOrdersController::class)->except(['update']);
     Route::put('customers/{customer}/orders/{order}', [CustomerOrdersController::class, 'replace']);
     Route::patch('customers/{customer}/orders/{order}', [CustomerOrdersController::class, 'update']);
