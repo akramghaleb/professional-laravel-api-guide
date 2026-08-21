@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::apiResource('orders', OrderController::class);
+Route::middleware('auth:sanctum')->apiResource('orders', OrderController::class);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
