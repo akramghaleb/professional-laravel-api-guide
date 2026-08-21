@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Http\Filters\V1\OrderFilter;
 use App\Models\Order;
 use App\Http\Requests\Api\V1\StoreOrderRequest;
 use App\Http\Requests\Api\V1\UpdateOrderRequest;
@@ -12,13 +13,9 @@ class OrderController extends ApiController
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(OrderFilter $filters)
     {
-        if ($this->include('customer')) {
-            return OrderResource::collection(Order::with('user')->paginate());
-        }
-
-        return OrderResource::collection(Order::paginate());
+        return OrderResource::collection(Order::filter($filters)->paginate());
     }
 
     /**
@@ -35,7 +32,7 @@ class OrderController extends ApiController
     public function show(Order $order)
     {
         if ($this->include('customer')) {
-            return new OrderResource($order->load('user'));
+            return new OrderResource($order->load('customer'));
         }
 
         return new OrderResource($order);
