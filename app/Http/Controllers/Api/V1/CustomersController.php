@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Http\Filters\V1\CustomerFilter;
 use App\Models\User;
 use App\Http\Requests\Api\V1\StoreUserRequest;
 use App\Http\Requests\Api\V1\UpdateUserRequest;
@@ -12,13 +13,9 @@ class CustomersController extends ApiController
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(CustomerFilter $filters)
     {
-        if ($this->include('orders')) {
-            return UserResource::collection(User::with('orders')->paginate());
-        }
-
-        return UserResource::collection(User::paginate());
+        return UserResource::collection(User::filter($filters)->paginate());
     }
 
     /**

@@ -2,11 +2,11 @@
 
 namespace App\Http\Filters\V1;
 
-class OrderFilter extends QueryFilter
+class CustomerFilter extends QueryFilter
 {
     protected $sortable = [
-        'reference',
-        'status',
+        'name',
+        'email',
         'createdAt' => 'created_at',
         'updatedAt' => 'updated_at'
     ];
@@ -38,27 +38,36 @@ class OrderFilter extends QueryFilter
 
         $relations = array_filter(
             explode(',', $value),
-            fn($relation) => $model->isRelation($relation)
+            fn ($relation) => $model->isRelation($relation)
         );
 
         return $this->builder->with($relations);
     }
 
     /**
-     * Filter by one or more statuses.
+     * Filter by one or more identifiers.
      */
-    public function status($value)
+    public function id($value)
     {
-        return $this->builder->whereIn('status', explode(',', $value));
+        return $this->builder->whereIn('id', explode(',', $value));
     }
 
     /**
-     * Filter by reference, where * acts as a wildcard.
+     * Filter by email, where * acts as a wildcard.
      */
-    public function reference($value)
+    public function email($value)
     {
         $likeStr = str_replace('*', '%', $value);
-        return $this->builder->where('reference', 'like', $likeStr);
+        return $this->builder->where('email', 'like', $likeStr);
+    }
+
+    /**
+     * Filter by name, where * acts as a wildcard.
+     */
+    public function name($value)
+    {
+        $likeStr = str_replace('*', '%', $value);
+        return $this->builder->where('name', 'like', $likeStr);
     }
 
     /**
