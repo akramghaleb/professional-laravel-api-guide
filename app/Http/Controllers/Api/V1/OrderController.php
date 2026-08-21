@@ -32,11 +32,16 @@ class OrderController extends ApiController
     {
         try {
             User::findOrFail($request->input('data.relationships.customer.data.id'));
+
+            // policy
+            $this->isAble('store', Order::class);
+
+            return new OrderResource(Order::create($request->mappedAttributes()));
         } catch (ModelNotFoundException $exception) {
             return $this->error('The provided customer id does not exist.', 404);
+        } catch (AuthorizationException $ex) {
+            return $this->error('You are not authorized to create that resource', 403);
         }
-
-        return new OrderResource(Order::create($request->mappedAttributes()));
     }
 
     /**
@@ -88,11 +93,16 @@ class OrderController extends ApiController
         try {
             $order = Order::findOrFail($order_id);
 
+            // policy
+            $this->isAble('replace', $order);
+
             $order->update($request->mappedAttributes());
 
             return new OrderResource($order);
         } catch (ModelNotFoundException $exception) {
             return $this->error('Order cannot be found.', 404);
+        } catch (AuthorizationException $ex) {
+            return $this->error('You are not authorized to replace that resource', 403);
         }
     }
 
@@ -103,11 +113,17 @@ class OrderController extends ApiController
     {
         try {
             $order = Order::findOrFail($order_id);
+
+            // policy
+            $this->isAble('delete', $order);
+
             $order->delete();
 
             return $this->ok('Order successfully deleted');
         } catch (ModelNotFoundException $exception) {
             return $this->error('Order cannot be found.', 404);
+        } catch (AuthorizationException $ex) {
+            return $this->error('You are not authorized to delete that resource', 403);
         }
     }
 }
