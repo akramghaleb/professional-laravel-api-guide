@@ -7,7 +7,7 @@ use App\Http\Requests\Api\V1\StoreUserRequest;
 use App\Http\Requests\Api\V1\UpdateUserRequest;
 use App\Http\Resources\V1\UserResource;
 
-class UsersController extends ApiController
+class CustomersController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -32,13 +32,13 @@ class UsersController extends ApiController
     /**
      * Display the specified resource.
      */
-    public function show(User $user)
+    public function show(User $customer)
     {
         if ($this->include('orders')) {
-            return new UserResource($user->load('orders'));
+            return new UserResource($customer->load('orders'));
         }
 
-        return new UserResource($user);
+        return new UserResource($customer);
     }
 
     /**

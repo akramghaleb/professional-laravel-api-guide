@@ -35,7 +35,7 @@ class OrderResource extends JsonResource
                         'id' => $this->user_id
                     ],
                     'links' => [
-                        'self' => route('users.show', ['user' => $this->user_id])
+                        'self' => route('customers.show', ['customer' => $this->user_id])
                     ]
                 ]
             ],

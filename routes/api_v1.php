@@ -1,7 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\V1\OrderController;
-use App\Http\Controllers\Api\V1\UsersController;
+use App\Http\Controllers\Api\V1\CustomersController;
+use App\Http\Controllers\Api\V1\CustomerOrdersController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,7 +18,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth:sanctum')->apiResource('orders', OrderController::class);
-Route::middleware('auth:sanctum')->apiResource('users', UsersController::class);
+Route::middleware('auth:sanctum')->apiResource('customers', CustomersController::class);
+Route::middleware('auth:sanctum')->apiResource('customers.orders', CustomerOrdersController::class);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
