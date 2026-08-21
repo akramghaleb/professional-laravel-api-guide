@@ -8,11 +8,14 @@ use App\Http\Requests\Api\V1\StoreOrderRequest;
 use App\Http\Requests\Api\V1\UpdateOrderRequest;
 use App\Http\Resources\V1\OrderResource;
 use App\Models\Order;
-use App\Models\User;
+use App\Policies\V1\OrderPolicy;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CustomerOrdersController extends ApiController
 {
+    protected $policyClass = OrderPolicy::class;
+
     /**
      * Display a listing of the resource.
      */
@@ -26,15 +29,18 @@ class CustomerOrdersController extends ApiController
     /**
      * Store a newly created resource in storage.
      */
-    public function store($customer_id, StoreOrderRequest $request)
+    public function store(StoreOrderRequest $request, $customer_id)
     {
         try {
-            User::findOrFail($customer_id);
-        } catch (ModelNotFoundException $exception) {
-            return $this->error('The provided customer id does not exist.', 404);
-        }
+            // policy
+             $this->isAble('store', Order::class);
 
-        return new OrderResource(Order::create($request->mappedAttributes()));
+             return new OrderResource(Order::create($request->mappedAttributes([
+                'customer' => 'user_id'
+             ])));
+         } catch (AuthorizationException $ex) {
+             return $this->error('You are not authorized to create that resource', 403);
+         }
     }
 
     /**
@@ -44,17 +50,19 @@ class CustomerOrdersController extends ApiController
     {
         // PUT
         try {
-            $order = Order::findOrFail($order_id);
+            $order = Order::where('id', $order_id)
+                            ->where('user_id', $customer_id)
+                            ->firstOrFail();
 
-            if ($order->user_id == $customer_id) {
+            $this->isAble('replace', $order);
 
-                $order->update($request->mappedAttributes());
-                return new OrderResource($order);
-            }
-            // TODO: order doesn't belong to user
+            $order->update($request->mappedAttributes());
+            return new OrderResource($order);
 
         } catch (ModelNotFoundException $exception) {
             return $this->error('Order cannot be found.', 404);
+        } catch (AuthorizationException $ex) {
+            return $this->error('You are not authorized to update that resource', 403);
         }
     }
 
@@ -65,16 +73,18 @@ class CustomerOrdersController extends ApiController
     {
         // PUT
         try {
-            $order = Order::findOrFail($order_id);
+            $order = Order::where('id', $order_id)
+                            ->where('user_id', $customer_id)
+                            ->firstOrFail();
 
-            if ($order->user_id == $customer_id) {
-                $order->update($request->mappedAttributes());
-                return new OrderResource($order);
-            }
-            // TODO: order doesn't belong to user
+            $this->isAble('update', $order);
 
+            $order->update($request->mappedAttributes());
+            return new OrderResource($order);
         } catch (ModelNotFoundException $exception) {
             return $this->error('Order cannot be found.', 404);
+        } catch (AuthorizationException $ex) {
+            return $this->error('You are not authorized to update that resource', 403);
         }
     }
 
@@ -84,17 +94,18 @@ class CustomerOrdersController extends ApiController
     public function destroy($customer_id, $order_id)
     {
         try {
-            $order = Order::findOrFail($order_id);
+            $order = Order::where('id', $order_id)
+                            ->where('user_id', $customer_id)
+                            ->firstOrFail();
 
-            if ($order->user_id == $customer_id) {
-                $order->delete();
-                return $this->ok('Order successfully deleted');
-            }
+            $this->isAble('delete', $order);
 
-            return $this->error('Order cannot be found.', 404);
-
+            $order->delete();
+            return $this->ok('Order successfully deleted');
         } catch (ModelNotFoundException $exception) {
             return $this->error('Order cannot be found.', 404);
+        } catch (AuthorizationException $ex) {
+            return $this->error('You are not authorized to delete that resource', 403);
         }
     }
 }

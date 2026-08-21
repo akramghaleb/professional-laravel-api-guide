@@ -9,16 +9,16 @@ class BaseOrderRequest extends FormRequest
     /**
      * Map the request attributes to their database columns.
      */
-    public function mappedAttributes()
+    public function mappedAttributes(array $otherAttributes = [])
     {
-        $attributeMap = [
+        $attributeMap = array_merge([
             'data.attributes.reference' => 'reference',
             'data.attributes.notes' => 'notes',
             'data.attributes.status' => 'status',
             'data.attributes.createdAt' => 'created_at',
             'data.attributes.updatedAt' => 'updated_at',
             'data.relationships.customer.data.id' => 'user_id',
-        ];
+        ], $otherAttributes);
 
         $attributesToUpdate = [];
         foreach ($attributeMap as $key => $attribute) {

@@ -35,11 +35,7 @@ class OrderPolicy
      */
     public function replace(User $user, Order $order)
     {
-        if ($user->tokenCan(Abilities::ReplaceOrder)) {
-            return true;
-        }
-
-        return false;
+        return $user->tokenCan(Abilities::ReplaceOrder);
     }
 
     /**

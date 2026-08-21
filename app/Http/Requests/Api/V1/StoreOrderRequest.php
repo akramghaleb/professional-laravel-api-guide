@@ -21,21 +21,33 @@ class StoreOrderRequest extends BaseOrderRequest
      */
     public function rules(): array
     {
+        $customerIdAttr = $this->routeIs('orders.store') ? 'data.relationships.customer.data.id' : 'customer';
+
         $rules = [
             'data.attributes.reference' => 'required|string',
             'data.attributes.notes' => 'required|string',
             'data.attributes.status' => 'required|string|in:pending,paid,shipped,cancelled',
-            'data.relationships.customer.data.id' => 'required|integer|exists:users,id'
+            $customerIdAttr => 'required|integer|exists:users,id'
         ];
 
         $user = $this->user();
 
-        if ($this->routeIs('orders.store')) {
-            if ($user->tokenCan(Abilities::CreateOwnOrder)) {
-                $rules['data.relationships.customer.data.id'] .= '|size:' . $user->id;
-            }
+        if ($user->tokenCan(Abilities::CreateOwnOrder)) {
+            $rules[$customerIdAttr] .= '|size:' . $user->id;
         }
 
         return $rules;
+    }
+
+    /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation()
+    {
+        if ($this->routeIs('customers.orders.store')) {
+            $this->merge([
+                'customer' => $this->route('customer')
+            ]);
+        }
     }
 }
