@@ -44,13 +44,19 @@ class OrderController extends ApiController
     /**
      * Display the specified resource.
      */
-    public function show(Order $order)
+    public function show($order_id)
     {
-        if ($this->include('customer')) {
-            return new OrderResource($order->load('customer'));
-        }
+        try {
+            $order = Order::findOrFail($order_id);
 
-        return new OrderResource($order);
+            if ($this->include('customer')) {
+                return new OrderResource($order->load('customer'));
+            }
+
+            return new OrderResource($order);
+        } catch (ModelNotFoundException $exception) {
+            return $this->error('Order cannot be found.', 404);
+        }
     }
 
     /**
@@ -64,8 +70,15 @@ class OrderController extends ApiController
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Order $order)
+    public function destroy($order_id)
     {
-        //
+        try {
+            $order = Order::findOrFail($order_id);
+            $order->delete();
+
+            return $this->ok('Order successfully deleted');
+        } catch (ModelNotFoundException $exception) {
+            return $this->error('Order cannot be found.', 404);
+        }
     }
 }
