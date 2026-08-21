@@ -7,6 +7,8 @@ use App\Models\Order;
 use App\Http\Requests\Api\V1\StoreOrderRequest;
 use App\Http\Requests\Api\V1\UpdateOrderRequest;
 use App\Http\Resources\V1\OrderResource;
+use App\Models\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class OrderController extends ApiController
 {
@@ -23,7 +25,20 @@ class OrderController extends ApiController
      */
     public function store(StoreOrderRequest $request)
     {
-        //
+        try {
+            User::findOrFail($request->input('data.relationships.customer.data.id'));
+        } catch (ModelNotFoundException $exception) {
+            return $this->error('The provided customer id does not exist.', 404);
+        }
+
+        $model = [
+            'reference' => $request->input('data.attributes.reference'),
+            'notes' => $request->input('data.attributes.notes'),
+            'status' => $request->input('data.attributes.status'),
+            'user_id' => $request->input('data.relationships.customer.data.id')
+        ];
+
+        return new OrderResource(Order::create($model));
     }
 
     /**
