@@ -9,15 +9,27 @@ trait ApiResponses
     /**
      * Return a successful response.
      */
-    protected function ok(string $message): JsonResponse
+    protected function ok(string $message, array $data): JsonResponse
     {
-        return $this->success($message, 200);
+        return $this->success($message, $data, 200);
     }
 
     /**
-     * Return a success response whose payload status matches the HTTP status.
+     * Return a success response with the given payload.
      */
-    protected function success(string $message, int $statusCode = 200): JsonResponse
+    protected function success(string $message, array $data, int $statusCode = 200): JsonResponse
+    {
+        return response()->json([
+            'data' => $data,
+            'message' => $message,
+            'status' => $statusCode
+        ], $statusCode);
+    }
+
+    /**
+     * Return an error response.
+     */
+    protected function error(string $message, int $statusCode): JsonResponse
     {
         return response()->json([
             'message' => $message,
