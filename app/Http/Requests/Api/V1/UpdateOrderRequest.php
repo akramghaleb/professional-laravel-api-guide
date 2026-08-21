@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Api\V1;
 
+use App\Permissions\V1\Abilities;
+
 class UpdateOrderRequest extends BaseOrderRequest
 {
     /**
@@ -25,6 +27,10 @@ class UpdateOrderRequest extends BaseOrderRequest
             'data.attributes.status' => 'sometimes|string|in:pending,paid,shipped,cancelled',
             'data.relationships.customer.data.id' => 'sometimes|integer',
         ];
+
+        if ($this->user()->tokenCan(Abilities::UpdateOwnOrder)) {
+            $rules['data.relationships.customer.data.id'] = 'prohibited';
+        }
 
         return $rules;
     }

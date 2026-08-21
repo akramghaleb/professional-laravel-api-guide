@@ -11,6 +11,7 @@ final class Abilities
     public const ReplaceOrder = 'order:replace';
     public const DeleteOrder = 'order:delete';
 
+    public const CreateOwnOrder = 'order:own:create';
     public const UpdateOwnOrder = 'order:own:update';
     public const DeleteOwnOrder = 'order:own:delete';
 
@@ -24,6 +25,7 @@ final class Abilities
      */
     public static function getAbilities(User $user)
     {
+        // don't assign '*'
         if ($user->is_manager) {
             return [
                 self::CreateOrder,
@@ -37,7 +39,7 @@ final class Abilities
             ];
         } else {
             return [
-                self::CreateOrder,
+                self::CreateOwnOrder,
                 self::UpdateOwnOrder,
                 self::DeleteOwnOrder
             ];

@@ -8,7 +8,6 @@ use App\Models\Order;
 use App\Http\Requests\Api\V1\StoreOrderRequest;
 use App\Http\Requests\Api\V1\UpdateOrderRequest;
 use App\Http\Resources\V1\OrderResource;
-use App\Models\User;
 use App\Policies\V1\OrderPolicy;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -31,14 +30,10 @@ class OrderController extends ApiController
     public function store(StoreOrderRequest $request)
     {
         try {
-            User::findOrFail($request->input('data.relationships.customer.data.id'));
-
             // policy
             $this->isAble('store', Order::class);
 
             return new OrderResource(Order::create($request->mappedAttributes()));
-        } catch (ModelNotFoundException $exception) {
-            return $this->error('The provided customer id does not exist.', 404);
         } catch (AuthorizationException $ex) {
             return $this->error('You are not authorized to create that resource', 403);
         }

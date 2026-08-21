@@ -47,11 +47,8 @@ class OrderPolicy
      */
     public function store(User $user)
     {
-        if ($user->tokenCan(Abilities::CreateOrder)) {
-            return true;
-        }
-
-        return false;
+        return $user->tokenCan(Abilities::CreateOrder) ||
+               $user->tokenCan(Abilities::CreateOwnOrder);
     }
 
     /**
