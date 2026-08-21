@@ -20,7 +20,10 @@ class OrderResource extends JsonResource
             'id' => $this->id,
             'attributes' => [
                 'reference' => $this->reference,
-                'notes' => $this->notes,
+                'notes' => $this->when(
+                    $request->routeIs('orders.show'),
+                    $this->notes
+                ),
                 'status' => $this->status,
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at
@@ -35,6 +38,9 @@ class OrderResource extends JsonResource
                         ['self' => 'todo']
                     ]
                 ]
+            ],
+            'includes' => [
+                new UserResource($this->user)
             ],
             'links' => [
                 ['self' => route('orders.show', ['order' => $this->id])]
