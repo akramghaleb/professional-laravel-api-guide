@@ -17,8 +17,9 @@ class CustomersController extends ApiController
      */
     public function index(CustomerFilter $filters)
     {
-        return UserResource::collection(
-            User::has('orders')->filter($filters)->paginate()
+        return $this->resource(
+            'Customers retrieved successfully.',
+            UserResource::collection(User::has('orders')->filter($filters)->paginate()),
         );
     }
 
@@ -32,9 +33,9 @@ class CustomersController extends ApiController
     public function show(User $customer)
     {
         if ($this->include('orders')) {
-            return new UserResource($customer->load('orders'));
+            return $this->resource('Customer retrieved successfully.', new UserResource($customer->load('orders')));
         }
 
-        return new UserResource($customer);
+        return $this->resource('Customer retrieved successfully.', new UserResource($customer));
     }
 }

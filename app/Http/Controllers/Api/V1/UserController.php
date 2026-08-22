@@ -25,8 +25,9 @@ class UserController extends ApiController
      */
     public function index(CustomerFilter $filters)
     {
-        return UserResource::collection(
-            User::filter($filters)->paginate()
+        return $this->resource(
+            'Users retrieved successfully.',
+            UserResource::collection(User::filter($filters)->paginate()),
         );
     }
 
@@ -40,7 +41,11 @@ class UserController extends ApiController
     public function store(StoreUserRequest $request)
     {
         if ($this->isAble('store', User::class)) {
-            return new UserResource(User::create($request->mappedAttributes()));
+            return $this->resource(
+                'User created successfully.',
+                new UserResource(User::create($request->mappedAttributes())),
+                201,
+            );
         }
 
         return $this->notAuthorized('You are not authorized to create that resource');
@@ -56,10 +61,10 @@ class UserController extends ApiController
     public function show(User $user)
     {
         if ($this->include('orders')) {
-            return new UserResource($user->load('orders'));
+            return $this->resource('User retrieved successfully.', new UserResource($user->load('orders')));
         }
 
-        return new UserResource($user);
+        return $this->resource('User retrieved successfully.', new UserResource($user));
     }
 
     /**
@@ -73,7 +78,7 @@ class UserController extends ApiController
     {
         if ($this->isAble('update', $user)) {
             $user->update($request->mappedAttributes());
-            return new UserResource($user);
+            return $this->resource('User updated successfully.', new UserResource($user));
         }
 
         return $this->notAuthorized('You are not authorized to update that resource');
@@ -91,7 +96,7 @@ class UserController extends ApiController
         // PUT
         if ($this->isAble('replace', $user)) {
             $user->update($request->mappedAttributes());
-            return new UserResource($user);
+            return $this->resource('User replaced successfully.', new UserResource($user));
         }
 
         return $this->notAuthorized('You are not authorized to update that resource');

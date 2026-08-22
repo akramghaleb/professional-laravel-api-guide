@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\CustomersController;
 use App\Http\Controllers\Api\V1\CustomerOrdersController;
 use App\Http\Controllers\Api\V1\UserController;
+use App\Http\Resources\V1\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -35,6 +36,10 @@ Route::middleware('auth:sanctum')->group(function() {
     });
 
     Route::get('/user', function (Request $request) {
-        return $request->user();
+        return response()->json([
+            'message' => 'Authenticated user retrieved successfully.',
+            'status' => 200,
+            'data' => (new UserResource($request->user()))->resolve($request),
+        ]);
     });
 });

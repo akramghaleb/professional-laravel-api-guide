@@ -30,8 +30,9 @@ class CustomerOrdersController extends ApiController
      */
     public function index(User $customer, OrderFilter $filters)
     {
-        return OrderResource::collection(
-            Order::where('user_id', $customer->id)->filter($filters)->paginate()
+        return $this->resource(
+            'Customer orders retrieved successfully.',
+            OrderResource::collection(Order::where('user_id', $customer->id)->filter($filters)->paginate()),
         );
     }
 
@@ -48,9 +49,13 @@ class CustomerOrdersController extends ApiController
     public function store(StoreOrderRequest $request, User $customer)
     {
         if ($this->isAble('store', Order::class)) {
-            return new OrderResource(Order::create($request->mappedAttributes([
-                'customer' => 'user_id'
-            ])));
+            return $this->resource(
+                'Order created successfully.',
+                new OrderResource(Order::create($request->mappedAttributes([
+                    'customer' => 'user_id',
+                ]))),
+                201,
+            );
         }
 
         return $this->notAuthorized('You are not authorized to create that resource');
@@ -71,7 +76,7 @@ class CustomerOrdersController extends ApiController
         // PUT
         if ($this->isAble('replace', $order)) {
             $order->update($request->mappedAttributes());
-            return new OrderResource($order);
+            return $this->resource('Order replaced successfully.', new OrderResource($order));
         }
 
         return $this->notAuthorized('You are not authorized to update that resource');
@@ -91,7 +96,7 @@ class CustomerOrdersController extends ApiController
         // PUT
         if ($this->isAble('update', $order)) {
             $order->update($request->mappedAttributes());
-            return new OrderResource($order);
+            return $this->resource('Order updated successfully.', new OrderResource($order));
         }
 
         return $this->notAuthorized('You are not authorized to update that resource');

@@ -24,7 +24,10 @@ class OrderController extends ApiController
      */
     public function index(OrderFilter $filters)
     {
-        return OrderResource::collection(Order::filter($filters)->paginate());
+        return $this->resource(
+            'Orders retrieved successfully.',
+            OrderResource::collection(Order::filter($filters)->paginate()),
+        );
     }
 
     /**
@@ -39,7 +42,11 @@ class OrderController extends ApiController
     public function store(StoreOrderRequest $request)
     {
         if ($this->isAble('store', Order::class)) {
-            return new OrderResource(Order::create($request->mappedAttributes()));
+            return $this->resource(
+                'Order created successfully.',
+                new OrderResource(Order::create($request->mappedAttributes())),
+                201,
+            );
         }
 
         return $this->notAuthorized('You are not authorized to create that resource');
@@ -56,10 +63,10 @@ class OrderController extends ApiController
     public function show(Order $order)
     {
         if ($this->include('customer')) {
-            return new OrderResource($order->load('customer'));
+            return $this->resource('Order retrieved successfully.', new OrderResource($order->load('customer')));
         }
 
-        return new OrderResource($order);
+        return $this->resource('Order retrieved successfully.', new OrderResource($order));
     }
 
     /**
@@ -75,7 +82,7 @@ class OrderController extends ApiController
         // PATCH
         if ($this->isAble('update', $order)) {
             $order->update($request->mappedAttributes());
-            return new OrderResource($order);
+            return $this->resource('Order updated successfully.', new OrderResource($order));
         }
 
         return $this->notAuthorized('You are not authorized to update that resource');
@@ -94,7 +101,7 @@ class OrderController extends ApiController
         // PUT
         if ($this->isAble('replace', $order)) {
             $order->update($request->mappedAttributes());
-            return new OrderResource($order);
+            return $this->resource('Order replaced successfully.', new OrderResource($order));
         }
 
         return $this->notAuthorized('You are not authorized to update that resource');
