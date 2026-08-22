@@ -6,6 +6,13 @@
             "type": "string",
             "name": "string",
             "value": "http:\/\/localhost:8000"
+        },
+        {
+            "id": "token",
+            "key": "token",
+            "type": "string",
+            "name": "Bearer token",
+            "value": ""
         }
     ],
     "info": {
@@ -41,18 +48,40 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"gbailey@example.net\",\"password\":\"+-0pBNvYgxwmi\\\/#iw\"}"
+                            "raw": "{\"email\":\"manager@manager.com\",\"password\":\"password\"}"
                         },
                         "description": "Authenticates the user and returns the user's API token.",
                         "auth": {
                             "type": "noauth"
                         }
                     },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Login succeeded', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "const body = pm.response.json();",
+                                    "if (body?.data?.token) {",
+                                    "    if (pm.environment.name) {",
+                                    "        pm.environment.set('token', body.data.token);",
+                                    "    } else {",
+                                    "        pm.collectionVariables.set('token', body.data.token);",
+                                    "    }",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
                     "response": [
                         {
                             "header": [],
                             "code": 200,
-                            "body": "{\n\"data\": {\n\"token\": \"{YOUR_AUTH_KEY}\"\n},\n\"message\": \"Authenticated\",\n\"status\": 200\n}",
+                            "body": "{\n\"message\": \"Authenticated successfully.\",\n\"status\": 200,\n\"data\": {\n\"token\": \"{YOUR_AUTH_KEY}\"\n}\n}",
                             "name": ""
                         }
                     ]
@@ -1046,6 +1075,13 @@
         }
     ],
     "auth": {
-        "type": "noauth"
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "token",
+                "value": "{{token}}",
+                "type": "string"
+            }
+        ]
     }
 }

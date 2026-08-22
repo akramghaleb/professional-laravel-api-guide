@@ -34,13 +34,13 @@ class AuthController extends Controller
         $request->validated($request->all());
 
         if (!Auth::attempt($request->only('email', 'password'))) {
-            return $this->error('Invalid credentials', 401);
+            return $this->error('Invalid credentials.', null, 401);
         }
 
         $user = User::firstWhere('email', $request->email);
 
         return $this->ok(
-            'Authenticated',
+            'Authenticated successfully.',
             [
                 'token' => $user->createToken(
                     'API token for ' . $user->email,
@@ -62,6 +62,6 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
 
-        return $this->ok('');
+        return $this->ok('Logged out successfully.');
     }
 }

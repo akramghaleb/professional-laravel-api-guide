@@ -77,11 +77,32 @@ composer install
 cp .env.example .env
 php artisan key:generate
 # configure your MySQL credentials in .env, then:
-php artisan migrate
+php artisan migrate --seed
 php artisan serve
 ```
 
 The API is then available at `http://localhost:8000`.
+
+## Postman Quick Start
+
+This repository includes a Postman Collection v2.1 and a local environment:
+
+- [`public/docs/collection.json`](public/docs/collection.json) — all documented API requests
+- [`postman/Orders-Hub-Local.postman_environment.json`](postman/Orders-Hub-Local.postman_environment.json) — local URL and bearer-token variables
+
+After running `php artisan migrate:fresh --seed` and `php artisan serve`:
+
+1. In Postman, select **Import** and import both JSON files above.
+2. Select the **Orders Hub - Local** environment.
+3. Run **Authentication / Login**. The included local-only account is
+   `manager@manager.com` with password `password`.
+4. The login test script saves the returned token automatically. All protected requests
+   inherit `Bearer {{token}}` from the collection.
+5. Run any request individually, or use the Collection Runner to exercise the collection.
+
+The seeded manager credential is for local development only. Never deploy it or run the
+demonstration seeder in production. If Scribe regenerates the documentation collection,
+verify the login script afterward; Scribe owns `public/docs/collection.json`.
 
 > **Note:** Laravel 13 uses the slim application skeleton — API routes, middleware, and
 > exception rendering are registered in [`bootstrap/app.php`](bootstrap/app.php), not in
