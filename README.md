@@ -110,68 +110,71 @@ verify the login script afterward; Scribe owns `public/docs/collection.json`.
 
 ## Guide Roadmap
 
-Each entry links to its section in the guide.
+The guide contains 27 implementation steps. Every link below points to the published article.
 
 **Foundations**
 
-1. [Requirements and initial setup](https://akramdev.com/blog/professional-laravel-api-guide#requirements-and-initial-setup)
-2. [Guide roadmap](https://akramdev.com/blog/professional-laravel-api-guide#guide-roadmap)
-3. [How to verify each checkpoint](https://akramdev.com/blog/professional-laravel-api-guide#how-to-verify-each-checkpoint)
-4. [Consistent JSON Responses and HTTP Status Codes](https://akramdev.com/blog/professional-laravel-api-guide#consistent-json-responses-and-http-status-codes)
-5. [Testing APIs with Postman](https://akramdev.com/blog/professional-laravel-api-guide#testing-apis-with-postman)
+1. [Consistent JSON Responses and HTTP Status Codes](https://akramdev.com/blog/professional-laravel-api-guide#consistent-json-responses-and-http-status-codes)
+2. [Testing APIs with Postman](https://akramdev.com/blog/professional-laravel-api-guide#testing-apis-with-postman)
+3. [Designing Resource-Oriented URLs](https://akramdev.com/blog/professional-laravel-api-guide#designing-resource-oriented-urls)
+4. [Structuring a Versioned API](https://akramdev.com/blog/professional-laravel-api-guide#structuring-a-versioned-api)
 
-**Structure & Authentication**
+**Authentication & Responses**
 
-6. [Designing Resource-Oriented URLs](https://akramdev.com/blog/professional-laravel-api-guide#designing-resource-oriented-urls)
-7. [Structuring a Versioned API](https://akramdev.com/blog/professional-laravel-api-guide#structuring-a-versioned-api)
-8. [Token Authentication with Laravel Sanctum](https://akramdev.com/blog/professional-laravel-api-guide#token-authentication-with-laravel-sanctum)
-9. [Token Revocation and Secure Logout](https://akramdev.com/blog/professional-laravel-api-guide#token-revocation-and-secure-logout)
+5. [Token Authentication with Laravel Sanctum](https://akramdev.com/blog/professional-laravel-api-guide#token-authentication-with-laravel-sanctum)
+6. [Token Revocation and Secure Logout](https://akramdev.com/blog/professional-laravel-api-guide#token-revocation-and-secure-logout)
+7. [Designing Stable Response Payloads](https://akramdev.com/blog/professional-laravel-api-guide#designing-stable-response-payloads)
+8. [Conditional Fields and Relationships](https://akramdev.com/blog/professional-laravel-api-guide#conditional-fields-and-relationships)
+9. [Optional Relationship Loading](https://akramdev.com/blog/professional-laravel-api-guide#optional-relationship-loading)
 
-**Response Design**
+**Filtering & Sorting**
 
-10. [Designing Stable Response Payloads](https://akramdev.com/blog/professional-laravel-api-guide#designing-stable-response-payloads)
-11. [Conditional Fields and Relationships](https://akramdev.com/blog/professional-laravel-api-guide#conditional-fields-and-relationships)
-12. [Optional Relationship Loading](https://akramdev.com/blog/professional-laravel-api-guide#optional-relationship-loading)
-
-**Querying**
-
-13. [Reusable Query Filters](https://akramdev.com/blog/professional-laravel-api-guide#reusable-query-filters)
-14. [Nested Resources and Relationship Filters](https://akramdev.com/blog/professional-laravel-api-guide#nested-resources-and-relationship-filters)
-15. [Safe Client-Controlled Sorting](https://akramdev.com/blog/professional-laravel-api-guide#safe-client-controlled-sorting)
+10. [Reusable Query Filters](https://akramdev.com/blog/professional-laravel-api-guide#reusable-query-filters)
+11. [Nested Resources and Relationship Filters](https://akramdev.com/blog/professional-laravel-api-guide#nested-resources-and-relationship-filters)
+12. [Safe Client-Controlled Sorting](https://akramdev.com/blog/professional-laravel-api-guide#safe-client-controlled-sorting)
 
 **Writing Data**
 
-16. [Creating Resources with POST](https://akramdev.com/blog/professional-laravel-api-guide#creating-resources-with-post)
-17. [Deleting Resources with DELETE](https://akramdev.com/blog/professional-laravel-api-guide#deleting-resources-with-delete)
-18. [Full Resource Replacement with PUT](https://akramdev.com/blog/professional-laravel-api-guide#full-resource-replacement-with-put)
-19. [Partial Resource Updates with PATCH](https://akramdev.com/blog/professional-laravel-api-guide#partial-resource-updates-with-patch)
+13. [Creating Resources with POST](https://akramdev.com/blog/professional-laravel-api-guide#creating-resources-with-post)
+14. [Deleting Resources with DELETE](https://akramdev.com/blog/professional-laravel-api-guide#deleting-resources-with-delete)
+15. [Full Resource Replacement with PUT](https://akramdev.com/blog/professional-laravel-api-guide#full-resource-replacement-with-put)
+16. [Partial Resource Updates with PATCH](https://akramdev.com/blog/professional-laravel-api-guide#partial-resource-updates-with-patch)
 
 **Authorization**
 
-20. [Resource Authorization with Policies](https://akramdev.com/blog/professional-laravel-api-guide#resource-authorization-with-policies)
-21. [Access Control with Token Abilities](https://akramdev.com/blog/professional-laravel-api-guide#access-control-with-token-abilities)
-22. [Fine-Grained Field Permissions](https://akramdev.com/blog/professional-laravel-api-guide#fine-grained-field-permissions)
-23. [Customer-Owned Order Operations](https://akramdev.com/blog/professional-laravel-api-guide#customer-owned-order-operations)
-24. [Secure User Management](https://akramdev.com/blog/professional-laravel-api-guide#secure-user-management)
-25. [Applying the Principle of Least Privilege](https://akramdev.com/blog/professional-laravel-api-guide#applying-the-principle-of-least-privilege)
+17. [Resource Authorization with Policies](https://akramdev.com/blog/professional-laravel-api-guide#resource-authorization-with-policies)
+18. [Access Control with Token Abilities](https://akramdev.com/blog/professional-laravel-api-guide#access-control-with-token-abilities)
+19. [Fine-Grained Field Permissions](https://akramdev.com/blog/professional-laravel-api-guide#fine-grained-field-permissions)
+20. [Customer-Owned Order Operations](https://akramdev.com/blog/professional-laravel-api-guide#customer-owned-order-operations)
+21. [Secure User Management](https://akramdev.com/blog/professional-laravel-api-guide#secure-user-management)
+22. [Applying the Principle of Least Privilege](https://akramdev.com/blog/professional-laravel-api-guide#applying-the-principle-of-least-privilege)
 
-**Hardening & Documentation**
+**Errors, Documentation & Verification**
 
-26. [Consistent API Error Handling](https://akramdev.com/blog/professional-laravel-api-guide#consistent-api-error-handling)
-27. [Generating API Documentation with Scribe](https://akramdev.com/blog/professional-laravel-api-guide#generating-api-documentation-with-scribe)
+23. [Consistent API Error Handling](https://akramdev.com/blog/professional-laravel-api-guide#consistent-api-error-handling)
+24. [Generating API Documentation with Scribe](https://akramdev.com/blog/professional-laravel-api-guide#generating-api-documentation-with-scribe)
+25. [Using One Response Format Everywhere](https://akramdev.com/blog/professional-laravel-api-guide#using-one-response-format-everywhere)
+26. [Testing the Response Format](https://akramdev.com/blog/professional-laravel-api-guide#testing-the-response-format)
+27. [Production Hardening Checklist](https://akramdev.com/blog/professional-laravel-api-guide#production-hardening-checklist)
 
 ## Following Along
 
-Checkpoints live on their own branches, numbered to match the guide's order, so you can jump
-to the state of the code at any point:
+Implementation checkpoints live on numbered branches. To start from the bare application:
 
 ```bash
-git branch -a                              # list available checkpoints
-git switch 00-Requirements-and-initial-setup
+git branch -a
+git switch --track origin/00-initial-setup
 ```
 
-The current branch, `00-Requirements-and-initial-setup`, holds the bare Laravel 13 skeleton —
-the starting line. Later checkpoints add the API layer on top.
+To inspect the response-format or testing checkpoints:
+
+```bash
+git switch 25-standardized-api-responses
+git switch 26-automated-api-tests
+```
+
+Branches are cumulative: each checkpoint contains the work from the preceding steps. The
+production hardening checklist is operational guidance, so it does not add application code.
 
 ## Useful Commands
 
